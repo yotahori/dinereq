@@ -47,9 +47,6 @@
       box-shadow: 0 1px 10px rgba(0,0,0,0.02);
     }
     .logo-container {
-      display: flex;
-      align-items: center;
-      gap: 8px;
       text-decoration: none;
     }
     .logo-title {
@@ -65,14 +62,18 @@
       align-items: center;
       gap: 24px;
     }
-    nav a {
+    nav a, .nav-btn {
       color: var(--text-main);
       text-decoration: none;
       font-size: 14px;
       font-weight: 700;
       transition: color 0.2s;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
     }
-    nav a:hover, nav a.active {
+    nav a:hover, .nav-btn:hover {
       color: var(--primary-orange);
     }
 
@@ -84,7 +85,7 @@
       max-width: 1160px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1.1fr 1fr;
+      grid-template-columns: 1.15fr 0.85fr;
       align-items: center;
       gap: 40px;
     }
@@ -107,12 +108,14 @@
       letter-spacing: -1px;
     }
 
+    /* 改行なしで1行に収める設定 */
     .hero-subheading {
-      font-size: 28px;
+      font-size: clamp(20px, 3.2vw, 29px);
       font-weight: 900;
       color: #1f2937;
       margin-bottom: 20px;
       line-height: 1.3;
+      white-space: nowrap;
     }
 
     .hero-description {
@@ -254,7 +257,6 @@
       color: var(--primary-orange);
     }
 
-    /* Floating speech badge */
     .floating-speech {
       position: absolute;
       top: 40px;
@@ -271,7 +273,7 @@
       z-index: 3;
     }
 
-    /* Section 2: What is Meshiriku */
+    /* Section 2: About */
     .section-about {
       background: #ffffff;
       padding: 80px 24px;
@@ -400,7 +402,7 @@
       text-align: center;
     }
 
-    /* Simplified Footer (ご指定の2項目のみ) */
+    /* Simplified Footer (指定の2項目のみ) */
     footer {
       background: #ffffff;
       border-top: 1px solid #f3ede2;
@@ -412,28 +414,54 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 24px;
+      gap: 20px;
     }
     .footer-links {
       display: flex;
       gap: 32px;
       align-items: center;
+      flex-wrap: wrap;
+      justify-content: center;
     }
-    .footer-links a {
+    .footer-links a, .contact-trigger {
       color: #4b5563;
       text-decoration: none;
       font-size: 15px;
       font-weight: 700;
       transition: color 0.2s;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
     }
-    .footer-links a:hover {
+    .footer-links a:hover, .contact-trigger:hover {
       color: var(--primary-orange);
       text-decoration: underline;
     }
     .copyright {
       font-size: 13px;
       color: #9ca3af;
-      margin-top: 10px;
+    }
+
+    /* トースト通知 */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1f2937;
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 14px;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 1000;
+      pointer-events: none;
+    }
+    #toast.show {
+      transform: translateX(-50%) translateY(0);
     }
 
     /* Responsive */
@@ -444,7 +472,7 @@
         padding-top: 40px;
       }
       .hero-title { font-size: 46px; }
-      .hero-subheading { font-size: 22px; }
+      .hero-subheading { white-space: normal; }
       .hero-description { margin: 0 auto 28px; }
       .store-buttons { justify-content: center; }
       .features-grid {
@@ -460,7 +488,7 @@
         grid-template-columns: 1fr;
         text-align: center;
         padding: 36px 24px;
-        gap: 30px;
+        gap: 20px;
       }
       .cta-card .store-buttons {
         justify-content: center;
@@ -473,20 +501,13 @@
   <!-- Header -->
   <header>
     <a href="#" class="logo-container">
-      <svg width="34" height="34" viewBox="0 0 48 48" fill="none">
-        <path d="M12 20C12 18 14 16 16 16H32C34 16 36 18 36 20V24H12V20Z" fill="#22c55e"/>
-        <circle cx="24" cy="12" r="4" fill="#22c55e"/>
-        <path d="M8 24H40C40 34 32 40 24 40C16 40 8 34 8 24Z" fill="#f97316"/>
-        <rect x="4" y="23" width="5" height="5" rx="2" fill="#f97316"/>
-        <rect x="39" y="23" width="5" height="5" rx="2" fill="#f97316"/>
-      </svg>
       <span class="logo-title"><span class="logo-orange">メシ</span><span class="logo-green">リク</span></span>
     </a>
     <nav>
       <a href="#about">特徴</a>
       <a href="#features">使い方</a>
       <a href="https://sites.google.com/view/meshireq-privacy-policy" target="_blank" rel="noopener">プライバシーポリシー</a>
-      <a href="mailto:meshireq@gmail.com">お問い合わせ</a>
+      <button class="nav-btn" onclick="openContact()">お問い合わせ</button>
     </nav>
   </header>
 
@@ -495,7 +516,7 @@
     <div class="hero-content">
       <p class="hero-eyebrow">家族の「今夜、なに食べる？」を、<span>もっと楽しく。</span></p>
       <h1 class="hero-title"><span class="logo-orange">メシ</span><span class="logo-green">リク</span></h1>
-      <h2 class="hero-subheading">「作る」と「考える」は<br>分業制に！</h2>
+      <h2 class="hero-subheading">「作る」と「考える」は分業制に！</h2>
       <p class="hero-description">
         メシリクは、家族みんなで食事を決められる献立アプリです。みんなのリクエストや投票で、毎日のごはんがもっと楽しく、もっと簡単に。
       </p>
@@ -648,17 +669,10 @@
       </div>
 
       <div class="cta-illustration">
-        <svg width="90" height="90" viewBox="0 0 48 48" fill="none">
-          <path d="M12 20C12 18 14 16 16 16H32C34 16 36 18 36 20V24H12V20Z" fill="#22c55e"/>
-          <circle cx="24" cy="12" r="4" fill="#22c55e"/>
-          <path d="M8 24H40C40 34 32 40 24 40C16 40 8 34 8 24Z" fill="#f97316"/>
-          <rect x="4" y="23" width="5" height="5" rx="2" fill="#f97316"/>
-          <rect x="39" y="23" width="5" height="5" rx="2" fill="#f97316"/>
-        </svg>
-        <div style="font-size: 32px; font-weight: 900; margin-top: 8px;">
+        <div style="font-size: 40px; font-weight: 900;">
           <span class="logo-orange">メシ</span><span class="logo-green">リク</span>
         </div>
-        <p style="font-size: 13px; font-weight: 700; color: #15803d; margin-top: 4px;">おいしい時間を、家族と一緒に。</p>
+        <p style="font-size: 15px; font-weight: 700; color: #15803d; margin-top: 6px;">おいしい時間を、家族と一緒に。</p>
       </div>
     </div>
   </section>
@@ -668,12 +682,37 @@
     <div class="footer-container">
       <div class="footer-links">
         <a href="https://sites.google.com/view/meshireq-privacy-policy" target="_blank" rel="noopener">プライバシーポリシー</a>
-        <a href="mailto:meshireq@gmail.com">お問い合わせ</a>
+        <button class="contact-trigger" onclick="openContact()">お問い合わせ (meshireq@gmail.com)</button>
         <a href="app-ads.txt" style="color:#9ca3af; font-size:12px;">app-ads.txt</a>
       </div>
       <p class="copyright">&copy; 2026 メシリク All rights reserved.</p>
     </div>
   </footer>
+
+  <!-- コピー完了トースト -->
+  <div id="toast">メールアドレスをコピーしました！📨</div>
+
+  <script>
+    function openContact() {
+      const email = 'meshireq@gmail.com';
+      // 1. クリップボードにコピー
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(email).then(() => {
+          showToast();
+        });
+      }
+      // 2. メーラー起動も試行
+      window.location.href = 'mailto:' + email + '?subject=' + encodeURIComponent('【メシリク】お問い合わせ');
+    }
+
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+  </script>
 
 </body>
 </html>
